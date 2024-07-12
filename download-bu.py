@@ -17,7 +17,7 @@ try:
         config_data = os.environ['CZDS_CONFIG']
         config = json.loads(config_data)
     else:
-        config_file = open("config.json", "r")
+        config_file = open("config-all-bu.json", "r")
         config = json.load(config_file)
         config_file.close()
 except:
