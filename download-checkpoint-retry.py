@@ -94,7 +94,6 @@ def get_zone_links(czds_base_url):
         sys.stderr.write("从 {0} 获取区域链接失败，错误代码 {1}\n".format(links_url, status_code))
         return None
 
-
 # 获取区域链接
 zone_links = get_zone_links(czds_base_url)
 if not zone_links:
@@ -107,13 +106,13 @@ if not zone_links:
 
 def save_checkpoint(tld):
     with open(CHECKPOINT_FILE, 'w') as f:
-        f.write(tld)
+        f.write(f"{DATE} {tld}")
 
 def load_checkpoint():
     if os.path.exists(CHECKPOINT_FILE):
         with open(CHECKPOINT_FILE, 'r') as f:
-            return f.read().strip()
-    return None
+            return f.read().strip().split()
+    return None, None
 
 # 下载一个区域文件的函数定义
 def download_one_zone(url, output_directory):
@@ -172,15 +171,24 @@ def download_zone_files(urls, working_directory):
         os.makedirs(output_directory)
 
     # 加载检查点
-    checkpoint = load_checkpoint()
-    skip = bool(checkpoint)
+    checkpoint_date, checkpoint_tld = load_checkpoint()
+    
+    if checkpoint_date != DATE:
+        print("检查点无效，清空检查点文件")
+        checkpoint_tld = None
+
+    skip = bool(checkpoint_tld)
     count = 0
+
+    if checkpoint_tld:
+        print(f"从检查点 {checkpoint_tld} 继续下载...")
 
     # 一个一个地下载区域文件
     for link in urls:
         tld = link.split('/')[-1].split('.')[0]
         if skip:
-            if tld == checkpoint:
+            if tld == checkpoint_tld:
+                print(f"找到检查点: {checkpoint_tld}，从此处继续下载...")
                 skip = False
             continue
 
@@ -197,17 +205,3 @@ download_zone_files(zone_links, working_directory)
 end_time = datetime.datetime.now()
 
 print("{0}: 完成所有区域文件的下载。耗时：{1}".format(str(end_time), (end_time - start_time)))
-
-
-'''
-1.重试机制:
-
-增加了MAX_RETRIES和RETRY_DELAY参数，分别控制最大重试次数和每次重试之间的延迟时间。
-在download_one_zone函数中，使用while循环实现重试机制，如果捕捉到requests.exceptions.ConnectionError错误，会进行重试。
-
-2.错误处理:
-
-在每次重试失败后，程序会等待一段时间（由RETRY_DELAY控制）再进行下一次尝试。
-如果重试次数超过MAX_RETRIES，则会输出下载失败的消息，并停止下载。
-这样，当网络出现问题时，脚本会自动进行重试，提高了下载的可靠性和鲁棒性。
-'''

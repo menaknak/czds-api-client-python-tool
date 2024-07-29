@@ -165,3 +165,5 @@ download_zone_files(zone_links, working_directory)
 end_time = datetime.datetime.now()
 
 print("{0}: DONE DONE. Completed downloading all zone files. Time spent: {1}".format(str(end_time), (end_time-start_time)))
+
+
