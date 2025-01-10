@@ -56,7 +56,69 @@ CPU核数：16核
     └── NS_27678121.csv
     /home/nly/DNS/CZDS/1ktldzonefile_data/phase1_zonefile_extraction/20240417/ns_set.txt
     ```
+    A_365395.csv：
+    ```txt
+    hostname,IPv4
+    0.blackcat.ns.principate.org.,193.201.200.34
+    0.dns.ressis.org.,194.176.0.3
+    0.name.terminaldigit.org.,52.229.11.115
+    0.node.org.,70.38.94.182
+    0.ns-gslb.org.,185.200.246.12
+    ```
+    AAAA_15363.csv
+    ```txt
+    hostname,IPv6
+    0.ns-gslb.org.,2001:0678:0f28:0000:0000:0000:0000:0008
+    0.ns-gslb.org.,2001:0678:0f28:0000:0000:0000:0000:0012
+    00.010101.org.,2001:08d8:1800:815b:0000:0000:0000:0001
+    001.baitnet.org.,2a00:dcc0:0eda:3748:0216:3cff:fe34:b740
+    010.baitnet.org.,2a00:7b80:3008:0003:0000:0000:13df:c042
+    ```
+    NS_27678121.csv
+    ```txt
+    SLD,hostname
+    0--0.org.,ns1.sitehost.co.nz.
+    0--0.org.,ns2.sitehost.co.nz.
+    0--0.org.,ns3.sitehost.co.nz.
+    0-0-0.org.,ns1-coming-soon.sav.com.
+    0-0-0.org.,ns2-coming-soon.sav.com.
+    ```
+    ds_597803.txt
+    ```txt
+    coorace-hdf.org.
+    innovationscheckar.org.
+    apprenticeshiptracker.org.
+    bangadarshan.org.
+    centerfordisinformationdefense.org.
+    ```
+    20240417/ns_set.txt
+    ```txt
+    ns2.onlinesuite.net
+    ns1.sellscotland.com
+    ns4.mldl1-ecomm.com
+    ns1.kon-cept.com
+    ns1.sojo-interactive.com.lamedelegation.org
+    ns4.voyagerlearning.com
+    ```
 - phase4_zdns_output：存放`step4_zdnsscan.sh`zdns扫描ns_set.txt的结果。
+    ```txt
+    /home/nly/DNS/CZDS/1ktldzonefile_data/phase4_zdns_output
+    ├── zdns_ns_set_20241127_2370809_1_A_iter.txt
+    ├── zdns_ns_set_20241227_2364827_1_AAAA_iter.txt
+    ├── zdns_ns_set_20241227_2364827_1_A_iter.txt
+    ├── zdns_ns_set_20250101_2363211_1_AAAA_iter.txt
+    ├── zdns_ns_set_20250101_2363211_1_A_iter.txt
+    ├── zdns_ns_set_20250108_2359051_1_AAAA_iter.txt
+    └── zdns_ns_set_20250108_2359051_1_A_iter.txt
+    ```
+    zdns_ns_set_20250108_2359051_1_A_iter.txt
+    ```txt
+    {"data":{"answers":[{"answer":"113.43.208.203","class":"IN","name":"ns2.a-t-s.biz","ttl":3600,"type":"A"}],"protocol":"","resolver":""},"name":"ns2.a-t-s.biz","status":"NOERROR","timestamp":"2025-01-08T10:48:01+08:00"}
+    {"data":{"protocol":"udp","resolver":"156.154.125.65:53"},"name":"pleasedropthishost15965.versistmedia.biz","status":"NXDOMAIN","timestamp":"2025-01-08T10:48:01+08:00"}
+    {"data":{"protocol":"udp","resolver":"37.209.196.13:53"},"name":"dropthishost-8cedef7b-b807-4fc8-9029-351a766325fe.biz","status":"NXDOMAIN","timestamp":"2025-01-08T10:48:01+08:00"}
+    {"data":{"answers":[{"answer":"194.58.198.54","class":"IN","name":"ns2.ubu.bank","ttl":172800,"type":"A"}],"protocol":"","resolver":""},"name":"ns2.ubu.bank","status":"NOERROR","timestamp":"2025-01-08T10:48:01+08:00"}
+    {"data":{"answers":[{"answer":"213.199.51.231","class":"IN","name":"ns2.zendahost.top","ttl":3600,"type":"A"}],"protocol":"","resolver":""},"name":"ns2.zendahost.top","status":"NOERROR","timestamp":"2025-01-08T10:48:01+08:00"}
+    ```
 
 
 - analyse：用于存放用户自己的分析脚本
