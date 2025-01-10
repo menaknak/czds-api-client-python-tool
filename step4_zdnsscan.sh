@@ -51,8 +51,8 @@ echo "{
 # zdns AAAA --input-file="$INPUT_FILE" --name-servers @/home/nly/DNS/CZDS/openresolver/data/pdnslist/pdns_top2000_convert.txt --threads=4000 --retries 2 --timeout 8 --output-file="$OUTPUT_FILE_AAAA" &
 # zdns A --input-file="$INPUT_FILE" --name-servers @/home/nly/DNS/CZDS/openresolver/data/zgc/useful_resolvers_convert.txt --threads=5000 --retries 1 --timeout 8 --output-file="$OUTPUT_FILE_A" &
 # zdns AAAA --input-file="$INPUT_FILE" --name-servers @/home/nly/DNS/CZDS/openresolver/data/zgc/useful_resolvers_convert.txt --threads=5000 --retries 1 --timeout 8 --output-file="$OUTPUT_FILE_AAAA" &
-zdns A --input-file="$INPUT_FILE" --iterative --threads=2500 --retries 2 --timeout 3 --output-file="$OUTPUT_FILE_A" &
-zdns AAAA --input-file="$INPUT_FILE" --iterative --threads=2500 --retries 2 --timeout 3 --output-file="$OUTPUT_FILE_AAAA" &
+zdns A --input-file="$INPUT_FILE" --iterative --threads=2500 --retries 2 --timeout 10 --output-file="$OUTPUT_FILE_A" &
+zdns AAAA --input-file="$INPUT_FILE" --iterative --threads=2500 --retries 2 --timeout 10 --output-file="$OUTPUT_FILE_AAAA" &
 
 
 wait

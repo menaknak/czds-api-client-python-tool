@@ -59,11 +59,16 @@ python3 /home/nly/DNS/CZDS/czds-api-client-python-1k-tld/step2_extract_ns.py "$P
 wait
 
 # 用zdns扫描所有ns
-sh /home/nly/DNS/CZDS/czds-api-client-python-1k-tld/step4_try.sh "$DATE"
+sh /home/nly/DNS/CZDS/czds-api-client-python-1k-tld/step4_zdnsscan.sh "$DATE"
 wait
 
 # 压缩zonefile，删去不需要的 zonefile——拆分文件夹
 find . -type d -name "zonefile_chaifen" -exec rm -r {} +
-find . -type f -name "*.txt" -exec bash -c 'tar -czvf "${1%.txt}.tar.gz" "$1" && rm "$1"' _ {} \;
+find . -type f -name "*.txt" -exec bash -c 'tar -czf "${1%.txt}.tar.gz" "$1" && rm "$1"' _ {} \;
 
 
+# # 删去不需要的 zonefile——拆分文件夹
+# find . -type d -name "zonefile_chaifen" -exec rm -r {} +
+
+# # 压缩 *.txt 文件并删除原文件
+# find . -type f -name "*.txt" -exec bash -c 'tar -czf "${1%.txt}.tar.gz" "$1" > /dev/null 2>&1 && rm "$1"' _ {} \;
