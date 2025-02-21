@@ -8,6 +8,7 @@ import requests
 
 from do_authentication import authenticate
 from do_http_get import do_get
+from utils.path_manager import PathManager
 
 # 用于记录进度的检查点文件
 CHECKPOINT_FILE = "checkpoint.txt"
@@ -40,7 +41,8 @@ czds_base_url = config['czds.base.url']
 
 DATE = time.strftime('%Y%m%d', time.localtime())
 
-working_directory = config.get('working.directory', '.') + DATE + "/"  # 默认当前目录加上今天的日期
+paths = PathManager()
+working_directory = paths.get_dated_path('zonefiles', DATE)
 target_tld_list = config.get('target.tld.list', '.')
 
 if not username:

@@ -3,6 +3,8 @@ from tqdm import tqdm
 import pandas as pd
 import os
 import sys
+from utils.path_manager import PathManager
+
 def mkdir(path):
     path = path.strip().rstrip('/')
     exist = os.path.exists(path)
@@ -12,12 +14,15 @@ def mkdir(path):
         except:
             pass
         
+paths = PathManager()
+
 DATE = time.strftime('%Y%m%d',time.localtime())
 DATE = sys.argv[-1]
 
-ERRORLOG = '/home/nly/DNS/CZDS/log/phase1/error/'+DATE+'.err'
-
-OUTPUTPATH = '/home/nly/DNS/CZDS/1ktldzonefile_data/phase1_zonefile_extraction/'+DATE+'/'
+ERRORLOG = os.path.join(paths.get_dated_path('error_logs', DATE), f'{DATE}.err')
+OUTPUTPATH = paths.get_dated_path('phase1_extraction', DATE)
+ZONEFILESPATH = paths.get_dated_path('zonefiles', DATE)
+PATH = os.path.join(ZONEFILESPATH, 'zonefile_chaifen')
 
 def getfilelist(cur_path):
     filelist=[]
@@ -26,8 +31,6 @@ def getfilelist(cur_path):
         filelist.extend(flist)
     return filelist
 
-ZONEFILESPATH = '/home/nly/DNS/CZDS/1ktldzonefile_data/zonefiles-1k-tld/'+DATE
-PATH=ZONEFILESPATH+'/zonefile_chaifen/'
 comfilelist = getfilelist(PATH)
 filelist=getfilelist(ZONEFILESPATH)
 
@@ -102,7 +105,7 @@ for tldfile in tqdm(filelist):
         
         
         # 这里可以直接导入MySQL
-        output = OUTPUTPATH+tld+'/'
+        output = OUTPUTPATH+'/'+tld+'/'
         mkdir(output)
         nsrrdf.to_csv(output+'NS'+'_'+str(len(nsrrdf))+'.csv',index=False)
         if a4rr:

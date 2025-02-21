@@ -1,9 +1,20 @@
 #!/usr/bin/env bash
 
-echo "开始测试......"
-cd /home/nly/DNS/CZDS/czds-api-client-python-1k-tld
+# 使用Python脚本获取配置路径
+get_path() {
+    python3 -c "from utils.path_manager import PathManager; print(PathManager().get_path('$1'))"
+}
 
-# 监控并重新启动download-checkpoint-retry.py，直到其正常结束
+get_dated_path() {
+    python3 -c "from utils.path_manager import PathManager; print(PathManager().get_dated_path('$1', '$2'))"
+}
+
+# 直接使用硬编码的项目根目录，因为这是固定的
+PROJECT_ROOT="/home/nly/DNS/CZDS/czds-api-client-python-tool"
+echo "开始测试......"
+cd "$PROJECT_ROOT"
+
+# 监控并重新启动download-checkpoint-retry.py
 while true; do
     python3 download-checkpoint-retry.py
     if [ $? -eq 0 ]; then
@@ -14,61 +25,56 @@ while true; do
     fi
 done
 
-DATE=$(date +%Y%m%d) 
-# DATE='20240517'
-DIR="/home/nly/DNS/CZDS/1ktldzonefile_data/zonefiles-1k-tld/$DATE"
-cd "$DIR"
-# 打印当前路径
-echo "当前路径是：$(pwd)"
-
-LOG_DIR="/home/nly/DNS/CZDS/1ktldzonefile_data/log"
+DATE=$(date +%Y%m%d)
+ZONEFILE_DIR=$(get_dated_path 'zonefiles' "$DATE")
+LOG_DIR=$(get_path 'log_root')
 LOG_FILE="$LOG_DIR/$DATE.txt"
+
+cd "$ZONEFILE_DIR"
+echo "当前路径是：$(pwd)"
 
 # 遍历所有 gz 文件并解压
 for file in *.gz; do
-  if ! gzip -df "$file"; then
-    echo "解压 $file 失败，删除损坏的文件" >> "$LOG_FILE"
-    rm -f "$file"
-  fi
+    if ! gzip -df "$file"; then
+        echo "解压 $file 失败，删除损坏的文件" >> "$LOG_FILE"
+        rm -f "$file"
+    fi
 done
 
-# 等待所有后台任务完成
 wait
 
-# 循环处理目录中的所有.tar文件，解压并删除
+# 循环处理目录中的所有.tar文件
 for file in *.tar; do
     tar -xvf "$file" && rm "$file"
 done
 
 # 拆分com.txt
-CHAIFEN="$DIR/zonefile_chaifen"
-mkdir "$CHAIFEN"
-split -l 10000000 "$DIR/com.txt" "$CHAIFEN/com.txt"
+CHAIFEN="$ZONEFILE_DIR/zonefile_chaifen"
+mkdir -p "$CHAIFEN"
+split -l 10000000 "$ZONEFILE_DIR/com.txt" "$CHAIFEN/com.txt"
 wait
 
 # 提取csv信息
-python3 /home/nly/DNS/CZDS/czds-api-client-python-1k-tld/step1_zonefile_extract.py "$DATE"
+python3 "$PROJECT_ROOT/step1_zonefile_extract.py" "$DATE"
 wait
 
+cd "$PROJECT_ROOT"
+
 # 二阶段扫描
-PHASE1="/home/nly/DNS/CZDS/1ktldzonefile_data/phase1_zonefile_extraction/$DATE"
+PHASE1=$(get_dated_path 'phase1_extraction' "$DATE")
 echo "$PHASE1"
 
 # 处理csv提取ns
-python3 /home/nly/DNS/CZDS/czds-api-client-python-1k-tld/step2_extract_ns.py "$PHASE1"
+python3 "$PROJECT_ROOT/step2_extract_ns.py" "$PHASE1"
 wait
+
+cd "$PROJECT_ROOT"
 
 # 用zdns扫描所有ns
-sh /home/nly/DNS/CZDS/czds-api-client-python-1k-tld/step4_zdnsscan.sh "$DATE"
+sh "$PROJECT_ROOT/step4_zdnsscan.sh" "$DATE"
 wait
 
-# 压缩zonefile，删去不需要的 zonefile——拆分文件夹
+# 压缩zonefile，删去不需要的文件
+cd "$ZONEFILE_DIR"
 find . -type d -name "zonefile_chaifen" -exec rm -r {} +
 find . -type f -name "*.txt" -exec bash -c 'tar -czf "${1%.txt}.tar.gz" "$1" && rm "$1"' _ {} \;
-
-
-# # 删去不需要的 zonefile——拆分文件夹
-# find . -type d -name "zonefile_chaifen" -exec rm -r {} +
-
-# # 压缩 *.txt 文件并删除原文件
-# find . -type f -name "*.txt" -exec bash -c 'tar -czf "${1%.txt}.tar.gz" "$1" > /dev/null 2>&1 && rm "$1"' _ {} \;

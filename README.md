@@ -25,17 +25,18 @@ CPU核数：16核
 使用说明
 ---------------------
 
-1. 编辑 `config.json`，填写相关信息，如需要下载的TLD和账号密码。  
+1. 编辑 `config.json`，填写相关信息，需要填写的信息有：ICANN账号密码，"base_paths":输出路径，"target.tld.list":待下载TLD列表。  
 2. 单次下载，运行命令：`python3 download-checkpoint-retry.py`  
-3. 如果需要周期性下载，编辑`all-step-zonefile-run-1k-scheduler.py`，自定义脚本启动时间。运行命令`python3 all-step-zonefile-run-1k-scheduler.py`。
+3. 单次下载并完成数据处理，运行命令：`bash all-step-zonefile-run-1ktld-checkpoint-retry.sh`
+4. 如果需要周期性下载，编辑`all-step-zonefile-run-1k-scheduler.py`，自定义脚本启动时间。运行命令`python3 all-step-zonefile-run-1k-scheduler.py`。
 
-所有的区文件将保存在 `working-directory`/zonefiles 文件夹中。  
+下载的区域文件将保存在 `working-directory` 文件夹中。  
 `working-directory` 的路径可以在 `config.json` 中指定，若未指定，则默认为当前目录。  
 
 ## 输出文件
 
 ### 目录结构
-总输出目录由用户在`config.json`和`all-step-zonefile-run-1ktld-checkpoint-retry.sh`中自定义。以下展示总目录中各个分目录：
+总输出目录由用户在`config.json`中自定义。以下展示总目录中各个分目录：
 ```txt
 .
 ├── analysis

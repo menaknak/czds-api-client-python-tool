@@ -4,6 +4,7 @@ import time
 from collections import Counter, defaultdict
 import os
 import sys
+from utils.path_manager import PathManager
 
 def getfilelist(cur_path):
     filelist = []
@@ -15,7 +16,8 @@ def getfilelist(cur_path):
 # DATE = time.strftime('%Y%m%d', time.localtime())
 
 # PATH='/home/nly/DNS/CZDS/data/phase1_zonefile_extraction/'+DATE+'/'
-PATH = sys.argv[-1] + '/'
+paths = PathManager()
+PATH = paths.get_dated_path('phase1_extraction', sys.argv[-1]) + '/'
 allfilelist = getfilelist(PATH)
 
 from tqdm import tqdm
