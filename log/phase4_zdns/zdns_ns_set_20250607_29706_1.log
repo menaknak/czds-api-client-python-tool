@@ -1,0 +1,9 @@
+{
+    "cmd": [
+        "cat /home/nly/DNS/CZDS/czds-api-client-python-tool/data/phase1_zonefile_extraction/20250607/ns_set.txt | ./zdns A  --iterative --threads=2500 --output-file=/home/nly/DNS/CZDS/czds-api-client-python-tool/data/phase4_zdns_output/zdns_ns_set_20250607_29706_1_A_iter.txt",
+        "cat /home/nly/DNS/CZDS/czds-api-client-python-tool/data/phase1_zonefile_extraction/20250607/ns_set.txt | ./zdns AAAA  --iterative --threads=2500 --output-file=/home/nly/DNS/CZDS/czds-api-client-python-tool/data/phase4_zdns_output/zdns_ns_set_20250607_29706_1_AAAA_iter.txt"
+    ],
+    "start_time": "2025-06-07 13:49:34",
+    "end_time": "",
+    "time": ""
+}

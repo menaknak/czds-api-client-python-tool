@@ -21,8 +21,12 @@ DATE = sys.argv[-1]
 
 ERRORLOG = os.path.join(paths.get_dated_path('error_logs', DATE), f'{DATE}.err')
 OUTPUTPATH = paths.get_dated_path('phase1_extraction', DATE)
+# 获取没有DATE的phase3_domain_count路径
+domain_sum_outputpath = paths.get_path('phase3_domain_count')
+print(domain_sum_outputpath)
 ZONEFILESPATH = paths.get_dated_path('zonefiles', DATE)
 PATH = os.path.join(ZONEFILESPATH, 'zonefile_chaifen')
+print(PATH)
 
 def getfilelist(cur_path):
     filelist=[]
@@ -35,13 +39,14 @@ comfilelist = getfilelist(PATH)
 filelist=getfilelist(ZONEFILESPATH)
 
 begin=time.time()
-
+domain_sum = 0
 
 
 nsrr_cols = ['SLD','hostname'] # todo: type
 arr_cols = ['hostname','IPv4'] # todo: type
 a4rr_cols = ['hostname','IPv6'] # todo: type
 
+all_domain = set()
 
 
 # tld_list=['app','book','bot','cam','camera','city','net','info','org']
@@ -72,7 +77,8 @@ for tldfile in tqdm(filelist):
                     name = s[0]
                     typ = s[3].lower()
                     value = s[4]
-                    #domainsld = name
+                    domainsld = name
+                    sld.add(domainsld)
                     if typ=='ns':
                         ns.add(value)
                         nsrr.append((name,value))
@@ -121,7 +127,14 @@ for tldfile in tqdm(filelist):
                 for i in ds:
                     f.write(i)
                     f.write('\n')
-        
+        if sld:
+            domain_sum+=len(sld)
+            all_domain.update(sld)
+            with open(output+'domainsum_'+str(len(sld))+'.txt','a') as f:
+                for i in sld:
+                    f.write(i)
+                    f.write('\n')    
+                
         
         del sld
         del ns
@@ -159,7 +172,8 @@ for filename in tqdm(comfilelist):
             name = s[0]
             typ = s[3].lower()
             value = s[4]
-            #domainsld = name
+            domainsld = name
+            sld.add(domainsld)
             if typ=='ns':
                 ns.add(value)
                 nsrr.append((name,value))
@@ -188,7 +202,7 @@ for filename in tqdm(comfilelist):
     arrdf.columns = arr_cols
     
     # 这里可以直接导入MySQL
-    output = OUTPUTPATH+tld+'/'
+    output = OUTPUTPATH+'/'+tld+'/'
     mkdir(output)
     nsrrdf.to_csv(output+'NS_'+number+'_'+str(len(nsrrdf))+'.csv',index=False)
     if a4rr:
@@ -200,6 +214,13 @@ for filename in tqdm(comfilelist):
             for i in ds:
                 f.write(i)
                 f.write('\n')    
+    if sld:
+        domain_sum+=len(sld)
+        all_domain.update(sld)
+        with open(output+'domainsum_'+str(len(sld))+'.txt','a') as f:
+            for i in sld:
+                f.write(i)
+                f.write('\n')
     
     del sld
     del ns
@@ -212,7 +233,10 @@ for filename in tqdm(comfilelist):
     del arrdf   
     del ds 
     
-    
+with open(domain_sum_outputpath+'/domainsum_'+DATE+'_'+str(domain_sum)+'.txt','a') as f:
+    for i in all_domain:
+        if i: f.write(i)
+        f.write('\n')
 end = time.time()
 t=end-begin
 # 转换时分秒格式

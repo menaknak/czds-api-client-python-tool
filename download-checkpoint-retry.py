@@ -39,7 +39,8 @@ password = config['icann.account.password']
 authen_base_url = config['authentication.base.url']
 czds_base_url = config['czds.base.url']
 
-DATE = time.strftime('%Y%m%d', time.localtime())
+# DATE = time.strftime('%Y%m%d', time.localtime())
+DATE = "yyyymmdd"
 
 paths = PathManager()
 working_directory = paths.get_dated_path('zonefiles', DATE)
@@ -86,7 +87,7 @@ def get_zone_links(czds_base_url):
 
     if status_code == 200:
         zone_links = links_response.json()
-        print("{0}: 要下载的区域文件数量为 {1}".format(datetime.datetime.now(), len(zone_links)))
+        # print("{0}: 要下载的区域文件数量为 {1}".format(datetime.datetime.now(), len(zone_links)))
         return zone_links
     elif status_code == 401:
         print("access_token 已过期。重新验证用户 {0}".format(username))
@@ -118,7 +119,7 @@ def load_checkpoint():
 
 # 下载一个区域文件的函数定义
 def download_one_zone(url, output_directory):
-    print("{0}: 从 {1} 下载区域文件".format(str(datetime.datetime.now()), url))
+    print("从 {0} 下载区域文件".format( url))
 
     global access_token
     retries = 0
@@ -144,7 +145,7 @@ def download_one_zone(url, output_directory):
                     for chunk in download_zone_response.iter_content(1024):
                         f.write(chunk)
 
-                print("{0}: 完成下载区域文件 {1}".format(str(datetime.datetime.now()), path))
+                print("完成下载区域文件 {0}".format(path))
                 return True
 
             elif status_code == 401:
@@ -176,7 +177,7 @@ def download_zone_files(urls, working_directory):
     checkpoint_date, checkpoint_tld = load_checkpoint()
     
     if checkpoint_date != DATE:
-        print("检查点无效，清空检查点文件")
+        # print("检查点无效，清空检查点文件")
         checkpoint_tld = None
 
     skip = bool(checkpoint_tld)
@@ -197,7 +198,8 @@ def download_zone_files(urls, working_directory):
         if tld in target_tld_list:
             print(link)
             if download_one_zone(link, output_directory):
-                save_checkpoint(tld)
+                # save_checkpoint(tld)
+                pass
         count += 1
     print('目前已申请成功的TLD zonfile数量：', count)
 
@@ -206,4 +208,4 @@ start_time = datetime.datetime.now()
 download_zone_files(zone_links, working_directory)
 end_time = datetime.datetime.now()
 
-print("{0}: 完成所有区域文件的下载。耗时：{1}".format(str(end_time), (end_time - start_time)))
+print("完成所有区域文件的下载。耗时：{0}".format((end_time - start_time)))

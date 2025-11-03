@@ -19,7 +19,7 @@ def authenticate(username, password, authen_base_url):
     # Return the access_token on status code 200. Otherwise, terminate the program.
     if status_code == 200:
         access_token = response.json()['accessToken']
-        print('{0}: Received access_token:'.format(datetime.datetime.now()))
+        print('Received access_token:')
         print(access_token)
         return access_token
     elif status_code == 404:
